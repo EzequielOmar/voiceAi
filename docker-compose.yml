@@ -1,0 +1,28 @@
+version: '3'
+services:
+  voiceai:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src:/app/src        
+      - ./models:/app/models
+    environment:
+      - FLASK_ENV=development
+    depends_on:
+      - tts
+
+  tts:
+    image: ghcr.io/coqui-ai/tts-cpu
+    ports:
+      - "5002:5002"
+    entrypoint: >
+      /bin/bash -c "
+      python3 TTS/server/server.py --model_name tts_models/es/css10/vits
+      "
+
+volumes:
+  app:
+    driver: local
+  models:
+    driver: local
